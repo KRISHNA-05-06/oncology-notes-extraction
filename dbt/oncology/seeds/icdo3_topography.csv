@@ -1,0 +1,6 @@
+primary_site,icdo3_code,icdo3_label
+breast,C50.9,"Breast, NOS"
+lung,C34.9,"Lung, NOS"
+colon,C18.9,"Colon, NOS"
+skin,C44.9,"Skin, NOS"
+prostate,C61.9,Prostate gland

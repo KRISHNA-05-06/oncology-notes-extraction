@@ -1,0 +1,41 @@
+# Pipeline configuration.
+# Central place for run parameters so the same code runs in dev / prod by
+# swapping this file (or overriding via env vars).
+
+run:
+  environment: dev            # dev | prod
+  #batch_size: 250
+  batch_size: 10
+  random_seed: 42
+
+paths:
+  notes: data/synthetic/notes.jsonl
+  gold: data/synthetic/gold.jsonl
+  deid_notes: data/synthetic/notes_deid.jsonl
+  pred_llm: data/synthetic/pred_llm.jsonl
+  pred_baseline: data/synthetic/pred_baseline.jsonl
+  landing_csv: data/synthetic/snowflake_landing.csv
+  run_log: logs/pipeline.log
+
+extraction:
+  model: claude-sonnet-4-6
+  max_tokens: 1024
+  # public list price ($/1M tokens) used only for cost reporting
+  price_in_per_mtok: 3.0
+  price_out_per_mtok: 15.0
+
+data_quality:
+  # a run fails if fewer than this fraction of notes get a primary_site
+  min_site_fill_rate: 0.95
+  # allowed AJCC stage groups
+  valid_stages: ["I", "IIA", "IIB", "IIIA", "IIIB", "IV"]
+
+deidentification:
+  # HIPAA Safe Harbor: replace the 18 identifier categories we simulate here
+  enabled: true
+  redaction_token: "[REDACTED]"
+
+snowflake:
+  database: ONCOLOGY
+  raw_schema: RAW
+  table: ONCOLOGY_EXTRACTIONS

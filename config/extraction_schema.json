@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "description": "Structured oncology facts extracted from a single clinical note.",
+  "properties": {
+    "primary_diagnosis": {
+      "type": "string",
+      "description": "The primary cancer diagnosis, e.g. 'invasive ductal carcinoma of the breast'."
+    },
+    "primary_site": {
+      "type": "string",
+      "description": "Anatomic site of the primary tumor, e.g. 'breast', 'lung', 'colon'."
+    },
+    "histology": {
+      "type": ["string", "null"],
+      "description": "Histologic type if stated, e.g. 'adenocarcinoma', 'squamous cell carcinoma'."
+    },
+    "tnm_stage": {
+      "type": "object",
+      "properties": {
+        "t": { "type": ["string", "null"], "description": "T category, e.g. 'T2'." },
+        "n": { "type": ["string", "null"], "description": "N category, e.g. 'N1'." },
+        "m": { "type": ["string", "null"], "description": "M category, e.g. 'M0'." },
+        "overall_stage": { "type": ["string", "null"], "description": "Overall stage group, e.g. 'IIB'." }
+      },
+      "required": ["t", "n", "m", "overall_stage"]
+    },
+    "biomarkers": {
+      "type": "array",
+      "description": "Molecular / receptor biomarkers with their status.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Biomarker name, e.g. 'ER', 'HER2', 'EGFR', 'KRAS', 'PD-L1'." },
+          "status": { "type": "string", "description": "Result, e.g. 'positive', 'negative', 'amplified', 'mutated', 'wild-type', or a value like '80%'." }
+        },
+        "required": ["name", "status"]
+      }
+    },
+    "medications": {
+      "type": "array",
+      "description": "Oncology-relevant medications / regimens mentioned.",
+      "items": { "type": "string" }
+    },
+    "ecog_performance_status": {
+      "type": ["integer", "null"],
+      "description": "ECOG performance status 0-5 if stated."
+    }
+  },
+  "required": ["primary_diagnosis", "primary_site", "tnm_stage", "biomarkers", "medications"]
+}

@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    database: ONCOLOGY
+    schema: RAW
+    tables:
+      - name: oncology_extractions
+
+models:
+  - name: stg_extractions
+    description: "One flattened row per clinical note with typed staging fields."
+    columns:
+      - name: note_id
+        tests: [not_null]
+      - name: primary_site
+        description: "Anatomic site of the primary tumor."
+      - name: overall_stage
+        description: "AJCC overall stage group (I-IV)."

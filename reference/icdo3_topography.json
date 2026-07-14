@@ -1,0 +1,10 @@
+{
+  "_comment": "Abbreviated ICD-O-3 topography (site) code crosswalk. Cancer registries code primary site with ICD-O-3; this maps our extracted free-text sites to standard codes so downstream analytics join to registry data. A production crosswalk would be the full WHO ICD-O-3 table.",
+  "site_to_icdo3": {
+    "breast":   { "code": "C50.9", "label": "Breast, NOS" },
+    "lung":     { "code": "C34.9", "label": "Lung, NOS" },
+    "colon":    { "code": "C18.9", "label": "Colon, NOS" },
+    "skin":     { "code": "C44.9", "label": "Skin, NOS" },
+    "prostate": { "code": "C61.9", "label": "Prostate gland" }
+  }
+}
