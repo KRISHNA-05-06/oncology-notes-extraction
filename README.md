@@ -22,13 +22,13 @@ Cancer centers like Moffitt see thousands of patients whose visits, pathology
 reports, and tumor board discussions are documented as free-text clinical notes.
 These notes need to become structured database rows to support:
 
-- **Cancer registry reporting** — Florida law requires standardized ICD-O-3
+- **Cancer registry reporting.** Florida law requires standardized ICD-O-3
   codes, AJCC stage, and histology for every case. Today this is done manually
   by human chart abstractors.
-- **Clinical research** — queries like "all stage III HER2-positive breast
+- **Clinical research.** Queries like "all stage III HER2-positive breast
   cancer patients treated with trastuzumab in the last 5 years" are impossible
   from free text.
-- **Outcomes tracking** — connecting treatment decisions to patient outcomes
+- **Outcomes tracking.** Connecting treatment decisions to patient outcomes
   requires structured, queryable data.
 
 This pipeline automates the extraction step with an LLM, benchmarks it against
@@ -53,7 +53,7 @@ The biomarker gap is the most significant finding. The rule-based baseline
 scores F1 0.526 because it misses non-standard clinical phrasings like
 `HER2 3+`, `EGFR exon 19 deletion`, and `ER(positive)`. Claude handles all
 of these correctly, achieving a perfect 1.000. TNM recall also jumps from
-0.676 to 1.000 — Claude correctly parses concatenated staging like `T2N1M0`
+0.676 to 1.000, because Claude correctly parses concatenated staging like `T2N1M0`
 and stage-only notes like `clinical stage IV` that trip up regex patterns.
 
 De-identification scrubbed **2.6 identifiers per note** (MRNs, dates, provider
@@ -70,20 +70,20 @@ generate → de-identify → extract (Claude + baseline) → data-quality gate �
                                  (P / R / F1 per field)
 ```
 
-1. **generate** — synthetic notes with real clinical texture: section headers,
+1. **generate**: synthetic notes with real clinical texture: section headers,
    abbreviations (s/p, h/o, ECOG, dx), varied staging formats, incomplete
    fields, and fake MRNs/dates/provider names.
-2. **de-identify** — HIPAA Safe Harbor scrub. All downstream steps only ever
+2. **de-identify**: HIPAA Safe Harbor scrub. All downstream steps only ever
    see de-identified text. Hard gate, not optional.
-3. **extract (Claude)** — Claude abstracts each note into schema-conformant
+3. **extract (Claude)**: Claude abstracts each note into schema-conformant
    JSON (`config/extraction_schema.json`).
-4. **extract (baseline)** — regex + gazetteer runs in parallel as the comparator.
-5. **data-quality gate** — asserts site fill-rate ≥ 95%, valid AJCC stages,
+4. **extract (baseline)**: regex + gazetteer runs in parallel as the comparator.
+5. **data-quality gate**: asserts site fill-rate ≥ 95%, valid AJCC stages,
    and scans for leaked identifiers. Non-zero exit fails the run.
-6. **evaluate** — precision / recall / F1 per field against gold labels.
-7. **load** — lands rows into Snowflake with a `run_id` for lineage (or local
+6. **evaluate**: precision / recall / F1 per field against gold labels.
+7. **load**: lands rows into Snowflake with a `run_id` for lineage (or local
    CSV when no credentials are set).
-8. **dbt** — staging view flattens VARIANT columns; marts join the ICD-O-3
+8. **dbt**: staging view flattens VARIANT columns; marts join the ICD-O-3
    registry crosswalk and roll staging into cohort-ready tables.
 
 Orchestrated end-to-end by Airflow (`airflow/dags/oncology_extraction_dag.py`).
@@ -100,8 +100,8 @@ Orchestrated end-to-end by Airflow (`airflow/dags/oncology_extraction_dag.py`).
 | Warehouse | Snowflake (VARIANT semi-structured columns) |
 | Transformation | dbt (staging views + analytics marts) |
 | Language | Python 3.10+ |
-| Config | PyYAML — central `config/pipeline.yml` |
-| Logging | Python logging — structured to `logs/pipeline.log` |
+| Config | PyYAML, central `config/pipeline.yml` |
+| Logging | Python logging, structured to `logs/pipeline.log` |
 
 ---
 
@@ -153,7 +153,7 @@ The extractor logs tokens used and estimated cost per note.
 
 During development, keep `batch_size: 10` in `config/pipeline.yml`. In
 production, switching to Claude Haiku with the Anthropic Batch API reduces
-per-note cost by ~90%. The pipeline also supports routing — send formulaic
+per-note cost by ~90%. The pipeline also supports routing: send formulaic
 notes to the free baseline and only send ambiguous ones to the LLM.
 
 ### dbt
@@ -172,14 +172,14 @@ system and out of any external API call. The rule-based scrub is fully auditable
 production would add a clinical NER model for names the rules miss.
 
 **Keep a dumb baseline on purpose.** It is the control group. The point is not
-that regex is bad — it is that quantifying the lift justifies the LLM's cost.
+that regex is bad. It is that quantifying the lift justifies the LLM's cost.
 Without a baseline, the F1 numbers are meaningless.
 
 **VARIANT in raw, flatten in dbt.** Land semi-structured LLM output as-is for
 lineage and replayability. Do typed modeling in the transformation layer.
 
 **Code standardization is a transform, not an extraction concern.** ICD-O-3
-mapping is a dbt seed join — versioned, testable, and separate from the
+mapping is a dbt seed join: versioned, testable, and separate from the
 extraction logic.
 
 **Honest stub mode.** Without an API key the pipeline runs end-to-end using a
@@ -247,4 +247,4 @@ Tampa, FL | srikrishnasaikota1@gmail.com
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
